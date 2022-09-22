@@ -4,9 +4,16 @@ using namespace std;
 
 static const int MAX_ALPHABET = 123;
 int flag[MAX_ALPHABET];
+int sign[15];
 int scoreWords[15];
 int maxScore = 0;
 int ans = 0;
+
+void createSign(int n) {
+    for (int i = 0; i < n; i++) {
+        sign[i] = -1;
+    }
+}
 
 void createFlag(vector<string>& letters) {
     int len = letters.size();
@@ -58,7 +65,11 @@ void increaseChar(string word) {
 
 bool isCanAdd(string word) {
     for (int i = 0; i < word.size(); i++) {
-        if (flag[i] <= 0) return false;
+        // cout << "word[" << i << "] = " << word[i] << endl;
+        // cout << "flag[" << word[i] << "] = " << flag[i] << endl;
+        int index = word[i];
+        //cout << "index: " << index << ", flag: " << flag[index] << endl;
+        if (flag[index] <= 0) return false;
     }
     return true;
 }
@@ -67,18 +78,21 @@ void TRY(int i, int n, vector<string>& words) {
     maxScore = maxScore + scoreWords[i];
     decreaseChar(words[i]);
     cout << "maxScore: " << maxScore << endl;
-
+    sign[i] = 1;
     if (maxScore > ans) {
         ans = maxScore;
         cout << "ans: " << ans << endl;
-        //cout << "maxScore: " << maxScore << endl;
-    }
-    i = i + 1;
-    if (i < n && isCanAdd(words[i])) {
-        TRY(i+1, n, words);
     }
 
-    i = i - 1;
+    for (int j = 0; j < n; j++) {
+        bool isCan = isCanAdd(words[j]);
+        if (sign[j] < 0 && isCan) {
+            cout << "nhay vao try" << endl;
+            TRY(j, n, words);
+        }
+    }
+    
+    sign[i] = -1;
     increaseChar(words[i]);
     maxScore = maxScore - scoreWords[i];
 }
@@ -95,6 +109,7 @@ int main() {
     int n = words.size();
     createFlag(letters);
     createScoreWords(words, score);
+    createSign(n);
     TRY(0, n, words);
     return 0;
 }
