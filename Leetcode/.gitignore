@@ -1,2 +1,4 @@
 !Medium/*.cpp
 !hard/*.cpp
+!easy/*.cpp
+./vscode/
